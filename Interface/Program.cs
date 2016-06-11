@@ -114,9 +114,8 @@ namespace Interface {
         }
 
         public static void macChangePerm(string file) {
-            Process.Start(new ProcessStartInfo(
-                    "chmod", "+x " + file)
-            { UseShellExecute = false });
+            Console.WriteLine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "permissionfix.sh"), "\"" + file + "\"");
+            Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "permissionfix.sh"), "\"" + file + "\"");
         }
 
         public static void StartGame(LauncherSetup setup) {
