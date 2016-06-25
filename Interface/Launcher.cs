@@ -186,7 +186,7 @@ namespace Interface
                     if (updater.GetProjectName() == _setup.LauncherProject)
                         executeScript = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "atmolauncher");
                     else if (updater.GetProjectName() == _setup.GameProject)
-                        executeScript = Path.Combine(targetPath, "Contents", "MacOS", "Atmosphir");
+                        executeScript = Path.Combine(targetPath, _setup.GameExecutable, "Contents", "MacOS", "Atmosphir");
 
                     Program.macChangePerm(executeScript);
                 }

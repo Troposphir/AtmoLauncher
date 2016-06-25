@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaunchFromProgramData", "La
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerExtras", "PermissionFix\InstallerExtras.csproj", "{B4C5BAA5-180A-4EB8-9DB5-90470490BF62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoGUI", "NoGUI\NoGUI.csproj", "{5AC72F90-B999-4951-A15F-75EBAE470B0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{B4C5BAA5-180A-4EB8-9DB5-90470490BF62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4C5BAA5-180A-4EB8-9DB5-90470490BF62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4C5BAA5-180A-4EB8-9DB5-90470490BF62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AC72F90-B999-4951-A15F-75EBAE470B0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AC72F90-B999-4951-A15F-75EBAE470B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AC72F90-B999-4951-A15F-75EBAE470B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AC72F90-B999-4951-A15F-75EBAE470B0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

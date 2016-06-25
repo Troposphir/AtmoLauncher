@@ -1,5 +1,4 @@
-﻿using Gtk;
-using Mono.Options;
+﻿using Mono.Options;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -7,38 +6,48 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 
-namespace Interface
+namespace NoGUI
 {
-    class Program {
+    class Program
+    {
         public static string ExecutableName => Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location);
 
-        public static bool IsUnix {
-            get {
+        public static bool IsUnix
+        {
+            get
+            {
                 int p = (int)Environment.OSVersion.Platform;
                 return (p == 4) || (p == 6) || (p == 128);
             }
         }
 
-        public static void Main(string[] args) {
+        public static void Main(string[] args)
+        {
             var immediateStart = false;
             var update = false;
             var atmoLink = "";
             string atmoLinkLaunchArgs = "";
 
-            if (args.Length > 0) {
-                foreach (string arg in args) {
-                    if (arg.StartsWith("atmo://")) {
+            if (args.Length > 0)
+            {
+                foreach (string arg in args)
+                {
+                    if (arg.StartsWith("atmo://"))
+                    {
                         atmoLink = arg;
                         break;
                     }
                 }
-                try {
+                try
+                {
                     new OptionSet {
                         {"s|start", "Immediately starts the game, without checking for updates.",s => immediateStart = s != null},
-                        {"u|update", "Initiates interface, and starts updating.",u => update = u != null},
+                        {"u|update", "Starts updating.",u => update = u != null},
                         {"a|atmourl=", "",a => atmoLink = a }
                     }.Parse(args);
-                } catch (OptionException e) {
+                }
+                catch (OptionException e)
+                {
                     Console.WriteLine(e.Message);
                     Console.WriteLine("Try `{0} --help` for usage information.", ExecutableName);
                     return;
@@ -55,46 +64,52 @@ namespace Interface
             string builderString;
             using (var file = File.OpenRead(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "launcher.bin")))
             using (var stream = new GZipStream(file, CompressionMode.Decompress))
-            using (var reader = new StreamReader(stream)) {
-                setup = JsonConvert.DeserializeObject<LauncherSetup>(reader.ReadLine(), new JsonSerializerSettings {
+            using (var reader = new StreamReader(stream))
+            {
+                setup = JsonConvert.DeserializeObject<LauncherSetup>(reader.ReadLine(), new JsonSerializerSettings
+                {
                     DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate
                 });
 
                 builderString = reader.ReadToEnd();
             }
 
-            if (atmoLink != "") {
+            if (atmoLink != "")
+            {
                 atmoLinkLaunchArgs = "standalone \"" + atmoLink + "\"";
                 StartGame(setup, atmoLinkLaunchArgs);
                 return;
             }
-            if (immediateStart) {
+            if (immediateStart)
+            {
                 StartGame(setup);
                 return;
             }
-            if (update) {
-                Application.Init();
-                var builder = new Builder();
-                builder.AddFromString(builderString);
-
-                new Launcher(setup, builder).Initialize();
-                Application.Run();
-            } else {
+            if (update)
+            {
+                // UPDATE
+                new Launcher(setup).Initialize();
+            }
+            else
+            {
                 RebootCopy();
             }
         }
 
-        private static void RebootCopy() {
+        private static void RebootCopy()
+        {
             var selfPath = Assembly.GetEntryAssembly().Location;
             var newPath = Path.ChangeExtension(selfPath, ".old.exe");
-            if (File.Exists(newPath)) {
+            if (File.Exists(newPath))
+            {
                 File.Delete(newPath);
             }
             File.Copy(selfPath, newPath);
             Process.Start(newPath, "--update");
         }
 
-        public static void RebootOrig(bool asAdmin = false) {
+        public static void RebootOrig(bool asAdmin = false)
+        {
             var processInfo = new ProcessStartInfo(GetOrigPath());
 
             if (asAdmin)
@@ -104,7 +119,8 @@ namespace Interface
             Process.GetCurrentProcess().Kill();
         }
 
-        public static string GetOrigPath() {
+        public static string GetOrigPath()
+        {
             var selfPath = Assembly.GetEntryAssembly().Location;
             if (selfPath.Contains("old"))
                 return selfPath.Replace("old.exe", "exe");
@@ -112,23 +128,27 @@ namespace Interface
                 return selfPath;
         }
 
-        public static void macChangePerm(string file) {
+        public static void macChangePerm(string file)
+        {
             Console.WriteLine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "permissionfix.sh"), "\"" + file + "\"");
             Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "permissionfix.sh"), "\"" + file + "\"");
         }
 
-        public static void StartGame(LauncherSetup setup) {
+        public static void StartGame(LauncherSetup setup)
+        {
             StartGame(setup, setup.ExecuteArgs);
         }
 
-        public static void StartGame(LauncherSetup setup, string args) {
+        public static void StartGame(LauncherSetup setup, string args)
+        {
             var gamePath = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
                 setup.GameFolder,
                 setup.GameExecutable
             );
 
-            if (IsUnix) {
+            if (IsUnix)
+            {
                 gamePath = Path.Combine(
                 Directory.GetParent(Assembly.GetEntryAssembly().Location).Parent.Parent.ToString(),
                 setup.GameFolder,
@@ -137,8 +157,10 @@ namespace Interface
 
                 Process.Start(new ProcessStartInfo(
                     "open",
-                    "-a '" + gamePath + "' -n --args " + args) { UseShellExecute = false });
-            } else
+                    "-a '" + gamePath + "' -n --args " + args)
+                { UseShellExecute = false });
+            }
+            else
                 Process.Start(gamePath, args);
 
             Process.GetCurrentProcess().Kill();
