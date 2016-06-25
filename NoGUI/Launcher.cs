@@ -16,6 +16,7 @@ namespace NoGUI
         private const string ProgressFormat = "{0} of {1} downloaded";
 
         private readonly LauncherSetup _setup;
+        bool errorOcurred = false;
 
         public Launcher(LauncherSetup setup)
         {
@@ -30,17 +31,18 @@ namespace NoGUI
             if (File.Exists(changeLogFile))
                 patchNotesText += "\n\n" + File.ReadAllText(changeLogFile);
 
-            Task.Run(() => CheckAndUpdate());
+            Task updateTask = Task.Run(() => CheckAndUpdate());
+
             Console.ReadKey();
+            
         }
 
         private async void CheckAndUpdate()
         {
             await UpdateProject(new UpdaterClient(_setup.RemoteEndpoint, _setup.LauncherProject), "");
             await UpdateProject(new UpdaterClient(_setup.RemoteEndpoint, _setup.GameProject), _setup.GameFolder).ContinueWith(t=> {
-                Console.WriteLine("Finished Updating. Press any key to launch the game.");
-                //Console.ReadKey();
-                Program.StartGame(_setup);
+                if(!errorOcurred)
+                    Program.StartGame(_setup);
             });
         }
 
@@ -158,10 +160,12 @@ namespace NoGUI
                 if (e is System.Net.WebException || e is System.Net.Http.HttpRequestException || e is System.Net.Sockets.SocketException)
                 {
                     Console.WriteLine("ERROR: Couldn't connect to update server. Please check your internet connection or try again later.");
+                    errorOcurred = true;
                 }
                 else
                 {
                     Console.WriteLine("An error ocurred, please report this at {0}:\n{1}", _setup.SupportSite, e);
+                    errorOcurred = true;
                 }
             }
         }
