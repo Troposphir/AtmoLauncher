@@ -26,8 +26,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 	header('Expires: Mon, 01 Jan 1996 00:00:00 GMT');
 	header('Content-Type: application/json');
 
-	$json = get_magic_quotes_gpc() ? json_decode(stripslashes($HTTP_RAW_POST_DATA), true) : json_decode($HTTP_RAW_POST_DATA, true);
-
+	$post = file_get_contents('php://input');
+	$json = get_magic_quotes_gpc() ? json_decode(stripslashes($post), true) : json_decode($post, true);
+	
 	if (!isset($json['request'])) return;
 	if (!isset($json['project'])) return;
 	if (!isset($json['body']) && $json['request'] != "get_version") return;
