@@ -27,7 +27,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 	header('Content-Type: application/json');
 
 	$post = file_get_contents('php://input');
-	$json = get_magic_quotes_gpc() ? json_decode(stripslashes($post), true) : json_decode($post, true);
+	$json = json_decode($post, true);
 	
 	if (!isset($json['request'])) return;
 	if (!isset($json['project'])) return;
