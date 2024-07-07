@@ -22,6 +22,7 @@ class RequestResponse {
 	private $request_;
 	private $project_;
 	private $contents_;
+	private $header_;
 	private $isFile = false;
 	protected $config;
 	protected $errorCodes_ = array(
